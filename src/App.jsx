@@ -4,15 +4,16 @@ import Moon from "./images/icon-moon.svg";
 import Sun from "./images/icon-sun.svg";
 import CloseIcon from "./images/icon-cross.svg";
 import { useState } from "react";
+
 function App() {
   const [mode, setMode] = useState(Moon);
   const [input, setInput] = useState("");
   const [liArr, setLiArr] = useState([]);
   const [Active, SetActive] = useState("All");
   const [completedLi, setcompletedLi] = useState([]);
-  let [count, SetCount] = useState(0);
+
   const HandleMode = () => {
-    mode == Moon ? setMode(Sun) : setMode(Moon);
+    mode === Moon ? setMode(Sun) : setMode(Moon);
   };
 
   const HandleAdd = () => {
@@ -20,56 +21,57 @@ function App() {
     setLiArr([...liArr, { name: input, active: true, completedLi: false }]);
     setInput("");
   };
+
   const handleCloseLi = (index) => {
     const newArr = liArr.filter((_, id) => id !== index);
     setLiArr(newArr);
   };
+
   const HandleCount = () => {
-    if (Active == "Active") {
+    if (Active === "Active") {
       return liArr.filter((ele) => ele.active).length;
-    } else if (Active == "Completed") {
+    } else if (Active === "Completed") {
       return liArr.filter((ele) => ele.completedLi).length;
     } else {
-      return liArr.length + count;
+      return liArr.filter((ele) => !ele.completedLi).length; 
     }
   };
+
   const getFilteredTodos = () => {
-    if (Active == "Active") {
+    if (Active === "Active") {
       return liArr.filter((ele) => ele.active);
-    } else if (Active == "Completed") {
+    } else if (Active === "Completed") {
       return liArr.filter((ele) => ele.completedLi);
     } else return liArr;
   };
+
   const handleComplete = (index) => {
     const newTodo = [...liArr];
-    if (newTodo[index].completedLi == false) {
-      SetCount(--count);
-      newTodo[index].completedLi = true;
-      newTodo[index].active = false;
-    } else {
-      SetCount(++count);
-      newTodo[index].completedLi = false;
-      newTodo[index].active = true;
-    }
+    newTodo[index].completedLi = !newTodo[index].completedLi;
+    newTodo[index].active = !newTodo[index].active;
+
     if (newTodo[index].completedLi) {
       setcompletedLi((prev) => [...prev, newTodo[index].name]);
     } else {
       setcompletedLi((prev) =>
-        prev.filter((item) => item != newTodo[index].name)
+        prev.filter((item) => item !== newTodo[index].name)
       );
     }
+
     setLiArr(newTodo);
   };
+
   const HandleClearCompleted = () => {
     const newArr = liArr.filter((ele) => !ele.completedLi);
     setLiArr(newArr);
   };
+
   return (
     <>
       <header className="min-h-screen flex flex-col">
         <div className="relative">
           <img
-            src={mode == Moon ? bgPhotoSun : bgPhotoMoon}
+            src={mode === Moon ? bgPhotoSun : bgPhotoMoon}
             className="min-w-full"
             alt="bgPhoto"
           />
@@ -93,7 +95,7 @@ function App() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className={`${
-                mode == Moon
+                mode === Moon
                   ? "bg-white"
                   : "bg-[hsl(235,24%,19%)] text-gray-200"
               } w-10/12 px-5 font-josefin py-3 rounded-s-sm md:text-sm text-[12px] outline-none`}
@@ -108,11 +110,11 @@ function App() {
           </div>
           <div
             className={`${
-              mode == Moon ? "bg-white" : "bg-[hsl(235,24%,19%)] border-none"
+              mode === Moon ? "bg-white" : "bg-[hsl(235,24%,19%)] border-none"
             } boxModel rounded-sm font-josefin mt-14  md:text-lg text-md border-gray-200 shadow-xl border-1`}
           >
             <ul
-              className={`${mode == Moon ? "text-blue-950" : "text-gray-300"}`}
+              className={`${mode === Moon ? "text-blue-950" : "text-gray-300"}`}
             >
               {getFilteredTodos().map((ele, index) => (
                 <div key={index}>
@@ -134,24 +136,22 @@ function App() {
                   </div>
                   <hr
                     className={`${
-                      mode == Moon ? "text-gray-300" : "text-gray-700"
+                      mode === Moon ? "text-gray-300" : "text-gray-700"
                     }`}
                   />
                 </div>
               ))}
             </ul>
 
-
             <div className="buttonFilter flex justify-between items-center text-gray-400 font-semibold md:text-sm text-[12px] px-5 py-4">
               <div>
                 <span>{HandleCount()} items left</span>
               </div>
-              {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */}
               {liArr.length > 0 ? (
                 <div className="xl:flex hidden gap-5 items-center text-center">
                   <button
                     className={`${
-                      Active == "All"
+                      Active === "All"
                         ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
                         : ""
                     } cursor-pointer`}
@@ -161,7 +161,7 @@ function App() {
                   </button>
                   <button
                     className={`${
-                      Active == "Active"
+                      Active === "Active"
                         ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
                         : ""
                     } cursor-pointer`}
@@ -171,7 +171,7 @@ function App() {
                   </button>
                   <button
                     className={`${
-                      Active == "Completed"
+                      Active === "Completed"
                         ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
                         : ""
                     } cursor-pointer`}
@@ -181,7 +181,6 @@ function App() {
                   </button>
                 </div>
               ) : null}
-              {/* ///////////////////////////////////////////////////////////////////////////////////////////////////////// */}
               <div>
                 <button
                   className="cursor-pointer md:text-sm text-[12px]"
@@ -191,56 +190,57 @@ function App() {
                 </button>
               </div>
             </div>
-
           </div>
-                  {/* Mobile Style */}
-        {liArr.length > 0 ? (
-          <div
-            className={`${
-              mode == Moon ? "bg-white" : "bg-[hsl(235,24%,19%)] text-white border-none"
-            } boxModel py-2 rounded-sm xl:hidden  font-josefin mt-4  text-md border-gray-200 shadow-xl border-1 w-full flex justify-center items-center `}
-          >
-                <div className="flex md:gap-10 gap-5 items-center text-center md:text-lg text-[12px]">
-                  <button
-                    className={`${
-                      Active == "All"
-                        ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
-                        : ""
-                    } cursor-pointer`}
-                    onClick={() => SetActive("All")}
-                  >
-                    All
-                  </button>
-                  <button
-                    className={`${
-                      Active == "Active"
-                        ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
-                        : ""
-                    } cursor-pointer`}
-                    onClick={() => SetActive("Active")}
-                  >
-                    Active
-                  </button>
-                  <button
-                    className={`${
-                      Active == "Completed"
-                        ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
-                        : ""
-                    } cursor-pointer`}
-                    onClick={() => SetActive("Completed")}
-                  >
-                    Completed
-                  </button>
-                </div>
-                </div>
-              ) : null}
+
+          {/* Mobile Style */}
+          {liArr.length > 0 ? (
+            <div
+              className={`${
+                mode === Moon
+                  ? "bg-white"
+                  : "bg-[hsl(235,24%,19%)] text-white border-none"
+              } boxModel py-2 rounded-sm xl:hidden  font-josefin mt-4  text-md border-gray-200 shadow-xl border-1 w-full flex justify-center items-center `}
+            >
+              <div className="flex md:gap-10 gap-5 items-center text-center md:text-lg text-[12px]">
+                <button
+                  className={`${
+                    Active === "All"
+                      ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
+                      : ""
+                  } cursor-pointer`}
+                  onClick={() => SetActive("All")}
+                >
+                  All
+                </button>
+                <button
+                  className={`${
+                    Active === "Active"
+                      ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
+                      : ""
+                  } cursor-pointer`}
+                  onClick={() => SetActive("Active")}
+                >
+                  Active
+                </button>
+                <button
+                  className={`${
+                    Active === "Completed"
+                      ? "bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-3 py-1 rounded-sm"
+                      : ""
+                  } cursor-pointer`}
+                  onClick={() => SetActive("Completed")}
+                >
+                  Completed
+                </button>
+              </div>
+            </div>
+          ) : null}
         </div>
         <div
           className={`${
-            mode == Moon ? "bg-gray-50" : "bg-[hsl(235,21%,11%)]"
+            mode === Moon ? "bg-gray-50" : "bg-[hsl(235,21%,11%)]"
           } flex-1`}
         ></div>
-
       </header>
     </>
   );
